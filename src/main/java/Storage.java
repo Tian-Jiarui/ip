@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 
 public class Storage {
@@ -44,7 +45,7 @@ public class Storage {
         }
         if (t instanceof Deadline) {
             Deadline d = (Deadline) t;
-            return String.join(" | ", "D", done, t.getDescription(), d.getBy());
+            return String.join(" | ", "D", done, t.getDescription(), d.getBy().toString());
         }
         if (t instanceof Event) {
             Event e = (Event) t;
@@ -69,7 +70,8 @@ public class Storage {
                 break;
             case "D":
                 if (parts.length < 4) return null;
-                t = new Deadline(desc, parts[3]);
+                LocalDate by = LocalDate.parse(parts[3]);
+                t = new Deadline(desc, by);
                 break;
             case "E":
                 if (parts.length < 5) return null;

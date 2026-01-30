@@ -1,4 +1,6 @@
 import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class Valencia {
     public static void main(String[] args) {
@@ -65,8 +67,14 @@ public class Valencia {
                         throw new ValenciaException("Wrong deadline format!");
                     }
                     String input1 = parts[0].trim();
-                    String input2 = parts[1].trim();
-                    Task deadlineTask = new Deadline(input1, input2);
+                    String dateStr = parts[1].trim();
+                    LocalDate by;
+                    try {
+                        by = LocalDate.parse(dateStr);
+                    } catch (DateTimeParseException e) {
+                        throw new ValenciaException("Wrong format! Date must be yyyy-MM-dd!");
+                    }
+                    Task deadlineTask = new Deadline(input1, by);
                     taskList.add(deadlineTask);
                     storage.save(taskList);
                     System.out.println(String.format("Got it. I've added this task:\n %s\nNow you have %s tasks in the list.", deadlineTask, taskList.size()));
