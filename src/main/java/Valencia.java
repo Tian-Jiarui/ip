@@ -8,7 +8,8 @@ public class Valencia {
         String exitGreet = "Bye. Hope to see you again soon!\n";
 
         Scanner sc = new Scanner(System.in);
-        TaskList taskList = new TaskList();
+        Storage storage = new Storage("data/valencia.txt");
+        TaskList taskList = storage.load();
         System.out.println(String.format("%s%s%s", line, welcomeGreet, line));
 
         while (true) {
@@ -27,6 +28,7 @@ public class Valencia {
                     }
 
                     taskList.markDone(taskNum - 1);
+                    storage.save(taskList);
                     System.out.println(String.format("Nice! I've marked this task as done:\n %s", taskList.get(taskNum - 1)));
                     continue;
 
@@ -41,6 +43,7 @@ public class Valencia {
                         throw new ValenciaException("That task number do not exist :P");
                     }
                     taskList.unmarkDone(taskNum - 1);
+                    storage.save(taskList);
                     System.out.println(String.format("OK, I've marked this task as not done yet:\n %s", taskList.get(taskNum - 1)));
                     continue;
 
@@ -51,6 +54,7 @@ public class Valencia {
                     }
                     Task todoTask = new Todo(desc);
                     taskList.add(todoTask);
+                    storage.save(taskList);
                     System.out.println(String.format("Got it. I've added this task:\n %s\nNow you have %s tasks in the list", todoTask, taskList.size()));
                     continue;
 
@@ -64,6 +68,7 @@ public class Valencia {
                     String input2 = parts[1].trim();
                     Task deadlineTask = new Deadline(input1, input2);
                     taskList.add(deadlineTask);
+                    storage.save(taskList);
                     System.out.println(String.format("Got it. I've added this task:\n %s\nNow you have %s tasks in the list.", deadlineTask, taskList.size()));
                     continue;
 
@@ -103,6 +108,7 @@ public class Valencia {
                         throw new ValenciaException("There is no tasks to delete :(");
                     }
                     Task removedTask = taskList.remove(taskNum - 1);
+                    storage.save(taskList);
                     System.out.println(String.format("Noted. I've removed this task:\n %s\n Now you have %s tasks in the list.", removedTask, taskList.size()));
                     continue;
                 }
@@ -124,4 +130,20 @@ public class Valencia {
             }
         }
     }
+
+    private static int parseTaskNumber(String input, String commandWord) {
+        String rest = input.substring(commandWord.length()).trim();
+        try {
+            return Integer.parseInt(rest);
+        } catch (NumberFormatException e) {
+            throw new ValenciaException("Sorry! I need a task number!");
+        }
+    }
+
+    private static void validateTaskNumber(int taskNum, TaskList taskList) {
+        if (taskNum < 1 || taskNum > taskList.size()) {
+            throw new ValenciaException("That task number does not exist :P");
+        }
+    }
 }
+

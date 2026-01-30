@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
 
 public class TaskList {
     private final ArrayList<Task> tasks = new ArrayList<>();
@@ -31,5 +33,9 @@ public class TaskList {
 
     public Task remove(int index) {
         return tasks.remove(index);
+    }
+
+    public List<Task> getTasks() {
+        return Collections.unmodifiableList(tasks);
     }
 }
