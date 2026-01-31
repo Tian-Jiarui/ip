@@ -32,8 +32,9 @@ application {
 }
 
 shadowJar {
-    archiveBaseName = "Valencia"
-    archiveClassifier = null
+    /*archiveBaseName = "Valencia"
+    archiveClassifier = null*/
+    archiveFileName = 'valencia.jar'
 }
 
 run{
