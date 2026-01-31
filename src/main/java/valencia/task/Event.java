@@ -1,4 +1,6 @@
-public class Event extends Task{
+package valencia.task;
+
+public class Event extends Task {
     private String from;
     private String to;
 
