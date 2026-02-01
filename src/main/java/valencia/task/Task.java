@@ -70,6 +70,6 @@ public class Task {
      */
     @Override
     public String toString() {
-            return checkDone() + " " + this.description;
-        }
+        return checkDone() + " " + this.description;
     }
+}

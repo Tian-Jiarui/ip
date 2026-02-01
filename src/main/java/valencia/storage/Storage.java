@@ -1,13 +1,17 @@
 package valencia.storage;
 
-import valencia.task.*;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
+
+import valencia.task.Deadline;
+import valencia.task.Event;
+import valencia.task.Task;
+import valencia.task.TaskList;
+import valencia.task.Todo;
 
 /**
  * Handles loading tasks from a local text file and saving tasks back into the same file.
@@ -93,20 +97,20 @@ public class Storage {
 
         Task t;
         switch (type) {
-            case "T":
-                t = new Todo(desc);
-                break;
-            case "D":
-                if (parts.length < 4) return null;
-                LocalDate by = LocalDate.parse(parts[3]);
-                t = new Deadline(desc, by);
-                break;
-            case "E":
-                if (parts.length < 5) return null;
-                t = new Event(desc, parts[3], parts[4]);
-                break;
-            default:
-                return null;
+        case "T":
+            t = new Todo(desc);
+            break;
+        case "D":
+            if (parts.length < 4) return null;
+            LocalDate by = LocalDate.parse(parts[3]);
+            t = new Deadline(desc, by);
+            break;
+        case "E":
+            if (parts.length < 5) return null;
+            t = new Event(desc, parts[3], parts[4]);
+            break;
+        default:
+            return null;
         }
 
         if (done) {
