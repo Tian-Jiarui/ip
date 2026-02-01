@@ -84,4 +84,36 @@ public class TaskList {
     public List<Task> getTasks() {
         return Collections.unmodifiableList(tasks);
     }
+
+    /**
+     * Finds task by keyword and return the tasks that matches.
+     * @param keyword User keyword (e.g. book)
+     * @return List of tasks that match
+     */
+    public List<Task> findByKeyword(String keyword) {
+        List<Task> matches = new ArrayList<>();
+        String key = keyword.toLowerCase();
+
+        for (Task t : tasks) {
+            if (t.getDescription().toLowerCase().contains(key)) {
+                matches.add(t);
+            }
+        }
+        return matches;
+    }
+
+    /** Print out tasks that matches
+     * @param keyword User keyword (e.g. book)
+     * @return String of tasks that matches
+     */
+    public void printMatches(String keyword) {
+        int count = 0;
+        for (int i = 0; i < tasks.size(); i++) {
+            if (tasks.get(i).getDescription().toLowerCase().contains(keyword.toLowerCase())) {
+                count++;
+                System.out.println(String.format("%d.%s", count, tasks.get(i)));
+            }
+        }
+    }
+
 }

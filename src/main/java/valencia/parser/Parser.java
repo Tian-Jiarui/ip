@@ -109,5 +109,20 @@ public class Parser {
 
         return new Event(input1, input2, input3);
     }
+
+    /**
+     * Parses input for "find" and returns the keyword.
+     *
+     * @param input User input (e.g. "find book").
+     * @return Keyword to search.
+     */
+    public static String parseFindKeyword(String input) {
+        String keyword = input.substring(4).trim(); // remove "find"
+        if (keyword.isEmpty()) {
+            throw new ValenciaException("Find what?");
+        }
+        return keyword;
+    }
+
 }
 
