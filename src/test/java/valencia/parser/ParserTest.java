@@ -1,13 +1,16 @@
 package valencia.parser;
 
-import org.junit.jupiter.api.Test;
-import valencia.exception.ValenciaException;
-import valencia.task.Deadline;
-import valencia.task.Task;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import valencia.exception.ValenciaException;
+import valencia.task.Deadline;
+import valencia.task.Task;
 
 public class ParserTest {
 

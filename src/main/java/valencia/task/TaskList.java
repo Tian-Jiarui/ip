@@ -1,8 +1,8 @@
 package valencia.task;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Stores and manages a list of tasks.
@@ -44,7 +44,7 @@ public class TaskList {
      */
     public void printList() {
         for (int i = 0; i < tasks.size(); i++) {
-            System.out.println(String.format("%s. %s", i+1, tasks.get(i)));
+            System.out.println(String.format("%s. %s", i + 1, tasks.get(i)));
         }
     }
 

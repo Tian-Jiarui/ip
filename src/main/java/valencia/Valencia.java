@@ -24,6 +24,13 @@ public class Valencia {
     }
 
     /**
+     * Launches the Valencia application.
+     */
+    public static void main(String[] args) {
+        new Valencia("data/valencia.txt").run();
+    }
+
+    /**
      * Runs the main input loop until the user exits the program.
      */
     public void run() {
@@ -82,27 +89,20 @@ public class Valencia {
                 }
 
                 switch (input.toLowerCase()) {
-                    case "list":
-                        ui.showMessage(String.format("Here are the tasks in your list:\n"));
-                        taskList.printList();
-                        break;
-                    case "bye":
-                        ui.showBye();
-                        return;
-                    default:
-                        throw new ValenciaException("I do not understand what you are saying :'(");
+                case "list":
+                    ui.showMessage(String.format("Here are the tasks in your list:\n"));
+                    taskList.printList();
+                    break;
+                case "bye":
+                    ui.showBye();
+                    return;
+                default:
+                    throw new ValenciaException("I do not understand what you are saying :'(");
                 }
             } catch (ValenciaException e) {
                 ui.showError(e.getMessage());
             }
         }
     }
-
-    /**
-     * Launches the Valencia application.
-     */
-    public static void main(String[] args) {
-        new Valencia("data/valencia.txt").run();
-}
 }
 
