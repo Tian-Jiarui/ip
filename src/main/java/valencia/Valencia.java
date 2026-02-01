@@ -8,6 +8,10 @@ import valencia.task.TaskList;
 import valencia.task.Todo;
 import valencia.ui.Ui;
 
+/**
+ * Entry point of the Valencia task manager.
+ * Handles reading user commands, delegating parsing, and coordinating storage + UI updates.
+ */
 public class Valencia {
     private final Ui ui;
     private final Storage storage;
@@ -19,6 +23,9 @@ public class Valencia {
         taskList = storage.load();
     }
 
+    /**
+     * Runs the main input loop until the user exits the program.
+     */
     public void run() {
         ui.showWelcome();
 
@@ -91,6 +98,9 @@ public class Valencia {
         }
     }
 
+    /**
+     * Launches the Valencia application.
+     */
     public static void main(String[] args) {
         new Valencia("data/valencia.txt").run();
 }

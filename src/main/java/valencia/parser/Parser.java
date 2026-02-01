@@ -8,8 +8,20 @@ import valencia.task.TaskList;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
+/**
+ * Parses user input strings into task-related data or Task objects.
+ * Throws ValenciaException when input format is invalid.
+ */
 public class Parser {
 
+    /**
+     * Extracts the task number from commands like "delete 3" or "mark 2".
+     *
+     * @param input Full user input.
+     * @param commandWord The command word (e.g. "delete", "mark").
+     * @return Parsed task number (1-based).
+     * @throws ValenciaException If task number is missing or not a number.
+     */
     public static int parseTaskNumber(String input, String commandWord) {
         String rest = input.substring(commandWord.length()).trim();
         try {
@@ -19,12 +31,26 @@ public class Parser {
         }
     }
 
+    /**
+     * Validates that the given task number is within the valid range of the list.
+     *
+     * @param taskNum Task number (1-based).
+     * @param taskList Current TaskList.
+     * @throws ValenciaException If task number is out of range.
+     */
     public static void validateTaskNumber(int taskNum, TaskList taskList) {
         if (taskNum < 1 || taskNum > taskList.size()) {
             throw new ValenciaException("That task number does not exist :P");
         }
     }
 
+    /**
+     * Parses the description for a todo command (e.g. "todo read book").
+     *
+     * @param input Full user input.
+     * @return Todo description.
+     * @throws ValenciaException If description is empty.
+     */
     public static String parseTodoDescription(String input) {
         String desc = input.substring(4).trim();
         if (desc.isEmpty()) {
@@ -33,6 +59,13 @@ public class Parser {
         return desc;
     }
 
+    /**
+     * Parses a deadline command in the format: "deadline <desc> /by yyyy-MM-dd".
+     *
+     * @param input Full user input.
+     * @return Deadline task created from the input.
+     * @throws ValenciaException If format is wrong or date is invalid.
+     */
     public static Deadline parseDeadline(String input) {
         String desc = input.substring(8).trim(); // remove "deadline"
         String[] parts = desc.split(" /by ", 2);
@@ -53,6 +86,13 @@ public class Parser {
         return new Deadline(taskDesc, by);
     }
 
+    /**
+     * Parses an event command in the format: "event <desc> /from <from> /to <to>".
+     *
+     * @param input Full user input.
+     * @return Event task created from the input.
+     * @throws ValenciaException If format is wrong.
+     */
     public static Event parseEvent(String input) {
         String desc = input.substring(5).trim();
         String[] firstPart = desc.split(" /from ", 2);
