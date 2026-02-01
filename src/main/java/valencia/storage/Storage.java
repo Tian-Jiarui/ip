@@ -9,13 +9,28 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Handles loading tasks from a local text file and saving tasks back into the same file.
+ * Uses a simple line-based format: TYPE | DONE | DESC | (extra fields...)
+ */
 public class Storage {
     private final Path filePath;
 
+    /**
+     * Creates a Storage that reads/writes to the given relative file path.
+     *
+     * @param relativePath File path (e.g. "data/valencia.txt").
+     */
     public Storage(String relativePath) {
         this.filePath = Paths.get(relativePath);
     }
 
+    /**
+     * Loads tasks from the file (if it exists). If file is missing or unreadable,
+     * returns an empty TaskList.
+     *
+     * @return TaskList containing tasks loaded from file.
+     */
     public TaskList load() {
         TaskList taskList = new TaskList();
 
@@ -42,6 +57,9 @@ public class Storage {
         return taskList;
     }
 
+    /**
+     * Converts a Task object into a single-line string format for saving.
+     */
     private String serializeTask(Task t) {
         String done = t.isDone() ? "1" : "0";
         if (t instanceof Todo) {
@@ -59,6 +77,12 @@ public class Storage {
         return String.join(" | ", "T", done, t.getDescription());
     }
 
+    /**
+     * Parses a single saved line into a Task object.
+     *
+     * @param line One line from the save file.
+     * @return Parsed Task, or null if the line is invalid.
+     */
     private Task parseTask(String line) {
         String[] parts = line.split("\\s*\\|\\s*");
         if (parts.length < 3) return null;
@@ -93,6 +117,12 @@ public class Storage {
         return t;
     }
 
+    /**
+     * Saves the given TaskList to the file. Creates parent directories if needed.
+     * Any IO errors are silently ignored.
+     *
+     * @param taskList TaskList to save.
+     */
     public void save(TaskList taskList) {
         try {
             Path parent = filePath.getParent();
