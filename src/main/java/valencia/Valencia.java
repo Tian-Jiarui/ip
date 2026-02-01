@@ -72,8 +72,19 @@ public class Valencia {
                     storage.save(taskList);
                     ui.showMessage(String.format("Noted. I've removed this task:\n %s\n Now you have %s tasks in the list.", removedTask, taskList.size()));
                     continue;
-                }
 
+                } else if (input.toLowerCase().startsWith("find")) {
+                    String keyword = Parser.parseFindKeyword(input);
+
+                    ui.showMessage("_________________________________________________\n"
+                            + "Here are the matching tasks in your list:\n");
+
+                    taskList.printMatches(keyword);
+
+                    ui.showMessage("_________________________________________________");
+                    continue;
+                }
+                
                 switch (input.toLowerCase()) {
                     case "list":
                         ui.showMessage(String.format("Here are the tasks in your list:\n"));
