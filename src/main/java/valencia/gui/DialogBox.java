@@ -1,4 +1,4 @@
-package valencia.GUI;
+package valencia.gui;
 
 import java.io.IOException;
 import java.util.Collections;

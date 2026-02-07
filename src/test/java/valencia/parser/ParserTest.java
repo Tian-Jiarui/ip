@@ -44,7 +44,7 @@ public class ParserTest {
 
     @Test
     public void parseDeadline_invalidDate_throwsException() {
-        assertThrows(ValenciaException.class,
-                () -> Parser.parseDeadline("deadline return book /by not-a-date"));
+        String input = "deadline return book /by not-a-date";
+        assertThrows(ValenciaException.class, () -> Parser.parseDeadline(input));
     }
 }

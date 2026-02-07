@@ -18,6 +18,11 @@ public class Valencia {
     private final TaskList taskList;
     private String commandType = "Other";
 
+    /**
+     * Creates a Valencia instance that loads tasks from the given file path.
+     *
+     * @param filePath Path to the save file.
+     */
     public Valencia(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
@@ -36,7 +41,7 @@ public class Valencia {
     }
 
     /**
-    For CLI
+     * For CLI
      */
     public void run() {
         ui.showLines(

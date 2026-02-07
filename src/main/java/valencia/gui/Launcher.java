@@ -1,4 +1,4 @@
-package valencia.GUI;
+package valencia.gui;
 
 import javafx.application.Application;
 

@@ -60,7 +60,7 @@ public class Parser {
     }
 
     /**
-     * Parses a deadline command in the format: "deadline <desc> /by yyyy-MM-dd".
+     * Parses a deadline command in the format: {@code deadline <desc> /by yyyy-MM-dd}.
      *
      * @param input Full user input.
      * @return Deadline task created from the input.
@@ -87,7 +87,7 @@ public class Parser {
     }
 
     /**
-     * Parses an event command in the format: "event <desc> /from <from> /to <to>".
+     * Parses an event command in the format: {@code event <desc> /from <from> /to <to>}.
      *
      * @param input Full user input.
      * @return Event task created from the input.
