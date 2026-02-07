@@ -115,5 +115,38 @@ public class TaskList {
             }
         }
     }
+    // =========================
+    // GUI
+    // =========================
 
+    /** Returns the full task list as a string (for GUI). */
+    public String formatList() {
+        if (tasks.isEmpty()) {
+            return "(no tasks yet)";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < tasks.size(); i++) {
+            sb.append(i + 1).append(". ").append(tasks.get(i)).append("\n");
+        }
+        return sb.toString().trim();
+    }
+
+    /** Returns matching tasks as a string (for GUI). */
+    public String formatMatches(String keyword) {
+        String key = keyword.toLowerCase();
+        int count = 0;
+        StringBuilder sb = new StringBuilder();
+
+        for (Task t : tasks) {
+            if (t.getDescription().toLowerCase().contains(key)) {
+                count++;
+                sb.append(count).append(". ").append(t).append("\n");
+            }
+        }
+
+        if (count == 0) {
+            return "(no matching tasks)";
+        }
+        return sb.toString().trim();
+    }
 }

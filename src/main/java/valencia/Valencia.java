@@ -16,6 +16,7 @@ public class Valencia {
     private final Ui ui;
     private final Storage storage;
     private final TaskList taskList;
+    private String commandType = "Other";
 
     public Valencia(String filePath) {
         ui = new Ui();
@@ -30,89 +31,118 @@ public class Valencia {
         new Valencia("data/valencia.txt").run();
     }
 
+    public String getCommandType() {
+        return commandType;
+    }
+
     /**
-     * Runs the main input loop until the user exits the program.
+    For CLI
      */
     public void run() {
         ui.showWelcome();
 
         while (true) {
             String input = ui.readCommand();
+            String response = getResponse(input);
+            ui.showMessage(response);
 
-            try {
-                if (input.toLowerCase().startsWith("mark")) {
-                    int taskNum = Parser.parseTaskNumber(input, "mark");
-                    Parser.validateTaskNumber(taskNum, taskList);
-                    taskList.markDone(taskNum - 1);
-                    storage.save(taskList);
-                    ui.showMessage(String.format("Nice! I've marked this task as done:\n %s", taskList.get(taskNum - 1)));
-                    continue;
-
-                } else if (input.toLowerCase().startsWith("unmark")) {
-                    int taskNum = Parser.parseTaskNumber(input, "unmark");
-                    Parser.validateTaskNumber(taskNum, taskList);
-                    taskList.unmarkDone(taskNum - 1);
-                    storage.save(taskList);
-                    ui.showMessage(String.format("OK, I've marked this task as not done yet:\n %s", taskList.get(taskNum - 1)));
-                    continue;
-
-                } else if (input.toLowerCase().startsWith("todo")) {
-                    String desc = Parser.parseTodoDescription(input);
-                    Task todoTask = new Todo(desc);
-                    taskList.add(todoTask);
-                    storage.save(taskList);
-                    ui.showMessage(String.format("Got it. I've added this task:\n %s\nNow you have %s tasks in the list", todoTask, taskList.size()));
-                    continue;
-
-                } else if (input.toLowerCase().startsWith("deadline")) {
-                    Task deadlineTask = Parser.parseDeadline(input);
-                    taskList.add(deadlineTask);
-                    storage.save(taskList);
-                    ui.showMessage(String.format("Got it. I've added this task:\n %s\nNow you have %s tasks in the list.", deadlineTask, taskList.size()));
-                    continue;
-
-
-                } else if (input.toLowerCase().startsWith("event")) {
-                    Task eventTask = Parser.parseEvent((input));
-                    taskList.add(eventTask);
-                    storage.save(taskList);
-                    ui.showMessage(String.format("Got it. I've added this task:\n %s\n Now you have %s in the list.", eventTask, taskList.size()));
-                    continue;
-
-                } else if (input.toLowerCase().startsWith("delete")) {
-                    int taskNum = Parser.parseTaskNumber(input, "delete");
-                    Parser.validateTaskNumber(taskNum, taskList);
-                    Task removedTask = taskList.remove(taskNum - 1);
-                    storage.save(taskList);
-                    ui.showMessage(String.format("Noted. I've removed this task:\n %s\n Now you have %s tasks in the list.", removedTask, taskList.size()));
-                    continue;
-
-                } else if (input.toLowerCase().startsWith("find")) {
-                    String keyword = Parser.parseFindKeyword(input);
-
-                    ui.showMessage("_________________________________________________\n"
-                            + "Here are the matching tasks in your list:\n");
-
-                    taskList.printMatches(keyword);
-
-                    ui.showMessage("_________________________________________________");
-                    continue;
-                }
-                
-                switch (input.toLowerCase()) {
-                case "list":
-                    ui.showMessage(String.format("Here are the tasks in your list:\n"));
-                    taskList.printList();
-                    break;
-                case "bye":
-                    ui.showBye();
-                    return;
-                default:
-                    throw new ValenciaException("I do not understand what you are saying :'(");
-                }
-            } catch (ValenciaException e) {
-                ui.showError(e.getMessage());
+            if (input.trim().equalsIgnoreCase("bye")) {
+                return;
             }
+        }
+    }
+
+    /**
+     * GUI + CLI
+     * Take user input and returns Valencia reply as a string
+     */
+    public String getResponse(String input) {
+        String trimmed = input.trim();
+        try {
+            if (trimmed.isEmpty()) {
+                throw new ValenciaException("Please type a command!");
+            }
+            String lower = trimmed.toLowerCase();
+
+            if (lower.startsWith("mark")) {
+                commandType = "Mark";
+                int taskNum = Parser.parseTaskNumber(trimmed, "mark");
+                Parser.validateTaskNumber(taskNum, taskList);
+                taskList.markDone(taskNum - 1);
+                storage.save(taskList);
+                return String.format("Nice! I've marked this task as done:\n%s", taskList.get(taskNum - 1));
+            }
+
+            if (lower.startsWith("unmark")) {
+                commandType = "Mark";
+                int taskNum = Parser.parseTaskNumber(trimmed, "unmark");
+                Parser.validateTaskNumber(taskNum, taskList);
+                taskList.unmarkDone(taskNum - 1);
+                storage.save(taskList);
+                return String.format("OK, I've marked this task as not done yet:\n%s", taskList.get(taskNum - 1));
+            }
+
+            if (lower.startsWith("todo")) {
+                commandType = "Add";
+                String desc = Parser.parseTodoDescription(trimmed);
+                Task todoTask = new Todo(desc);
+                taskList.add(todoTask);
+                storage.save(taskList);
+                return String.format("Got it. I've added this task:\n%s\nNow you have %d tasks in the list.",
+                        todoTask, taskList.size());
+            }
+
+            if (lower.startsWith("deadline")) {
+                commandType = "Add";
+                Task deadlineTask = Parser.parseDeadline(trimmed);
+                taskList.add(deadlineTask);
+                storage.save(taskList);
+                return String.format("Got it. I've added this task:\n%s\nNow you have %d tasks in the list.",
+                        deadlineTask, taskList.size());
+            }
+
+            if (lower.startsWith("event")) {
+                commandType = "Add";
+                Task eventTask = Parser.parseEvent(trimmed);
+                taskList.add(eventTask);
+                storage.save(taskList);
+                return String.format("Got it. I've added this task:\n%s\nNow you have %d tasks in the list.",
+                        eventTask, taskList.size());
+            }
+
+            if (lower.startsWith("delete")) {
+                commandType = "Delete";
+                int taskNum = Parser.parseTaskNumber(trimmed, "delete");
+                Parser.validateTaskNumber(taskNum, taskList);
+                Task removedTask = taskList.remove(taskNum - 1);
+                storage.save(taskList);
+                return String.format("Noted. I've removed this task:\n%s\nNow you have %d tasks in the list.",
+                        removedTask, taskList.size());
+            }
+
+            if (lower.startsWith("find")) {
+                commandType = "Find";
+                String keyword = Parser.parseFindKeyword(trimmed);
+                return "Here are the matching tasks in your list:\n" + taskList.formatMatches(keyword);
+            }
+
+            switch (lower) {
+            case "list":
+                commandType = "List";
+                return "Here are the tasks in your list:\n" + taskList.formatList();
+
+            case "bye":
+                commandType = "Bye";
+                return "Bye. Hope to see you again soon!";
+
+            default:
+                commandType = "Unknown";
+                throw new ValenciaException("I do not understand what you are saying :'(");
+            }
+
+        } catch (ValenciaException e) {
+            commandType = "Error";
+            return "OOPS!!! " + e.getMessage();
         }
     }
 }
