@@ -32,11 +32,21 @@ public class MainWindow extends AnchorPane {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
     }
 
-    /** Injects the Valencia instance */
     public void setValencia(Valencia v) {
         valencia = v;
+        showWelcome();
     }
 
+    private void showWelcome() {
+        dialogContainer.getChildren().add(
+                DialogBox.getValenciaDialog(
+                        "Hello! I'm Valencia.\nWhat can I do for you?",
+                        valenciaImage,
+                        "Other"
+                )
+        );
+    }
+    
     /**
      * Creates two dialog boxes, one echoing user input and the other containing Valencia's reply and then appends them to
      * the dialog container. Clears the user input after processing.

@@ -52,4 +52,15 @@ public class Ui {
     public void showMessage(String message) {
         System.out.println(message);
     }
+
+    /**
+     * Prints multiple lines to the user.
+     *
+     * @param lines One or more lines to display.
+     */
+    public void showLines(String... lines) {
+        for (String s : lines) {
+            System.out.println(s);
+        }
+    }
 }
