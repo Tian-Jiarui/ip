@@ -1,6 +1,7 @@
-package valencia.GUI;
+package valencia.gui;
 
 import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -25,7 +26,7 @@ public class Main extends Application {
             stage.setMinHeight(220);
             stage.setMinWidth(417);
             stage.setMaxWidth(417);
-            fxmlLoader.<MainWindow>getController().setValencia(valencia);  // inject the Duke instance
+            fxmlLoader.<MainWindow>getController().setValencia(valencia); // inject the Duke instance
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

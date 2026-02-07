@@ -51,11 +51,11 @@ public class Storage {
                         taskList.add(t);
                     }
                 } catch (Exception ignore) {
-
+                    //Ignore invalid lines when loading
                 }
             }
         } catch (IOException e) {
-
+            //Ignore and return empty list if file cannot be read
         }
 
         return taskList;
@@ -89,8 +89,9 @@ public class Storage {
      */
     private Task parseTask(String line) {
         String[] parts = line.split("\\s*\\|\\s*");
-        if (parts.length < 3) return null;
-
+        if (parts.length < 3) {
+            return null;
+        }
         String type = parts[0];
         boolean done = "1".equals(parts[1]);
         String desc = parts[2];
@@ -101,12 +102,16 @@ public class Storage {
             t = new Todo(desc);
             break;
         case "D":
-            if (parts.length < 4) return null;
+            if (parts.length < 4) {
+                return null;
+            }
             LocalDate by = LocalDate.parse(parts[3]);
             t = new Deadline(desc, by);
             break;
         case "E":
-            if (parts.length < 5) return null;
+            if (parts.length < 5) {
+                return null;
+            }
             t = new Event(desc, parts[3], parts[4]);
             break;
         default:
@@ -141,7 +146,7 @@ public class Storage {
 
             Files.writeString(filePath, sb.toString());
         } catch (IOException e) {
-
+            //Ignore save failures
         }
     }
 }

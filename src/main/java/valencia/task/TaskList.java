@@ -102,9 +102,11 @@ public class TaskList {
         return matches;
     }
 
-    /** Print out tasks that matches
+    /**
+     * Print out tasks that matches
+     *
      * @param keyword User keyword (e.g. book)
-     * @return String of tasks that matches
+     *
      */
     public void printMatches(String keyword) {
         int count = 0;

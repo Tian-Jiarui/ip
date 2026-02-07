@@ -1,4 +1,4 @@
-package valencia.GUI;
+package valencia.gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -24,8 +24,13 @@ public class MainWindow extends AnchorPane {
 
     private Valencia valencia;
 
-    private Image userImage = new Image(this.getClass().getResourceAsStream("/images/speed.png"));
-    private Image valenciaImage = new Image(this.getClass().getResourceAsStream("/images/galgadot.png"));
+    private final Image userImage = new Image(
+            getClass().getResourceAsStream("/images/speed.png")
+    );
+
+    private final Image valenciaImage = new Image(
+            getClass().getResourceAsStream("/images/galgadot.png")
+    );
 
     @FXML
     public void initialize() {
@@ -46,10 +51,11 @@ public class MainWindow extends AnchorPane {
                 )
         );
     }
-    
+
     /**
-     * Creates two dialog boxes, one echoing user input and the other containing Valencia's reply and then appends them to
-     * the dialog container. Clears the user input after processing.
+     * Creates two dialog boxes, one echoing user input and the other containing Valencia's reply,
+     * and then appends them to the dialog container.
+     * Clears the user input after processing.
      */
     @FXML
     private void handleUserInput() {
@@ -63,4 +69,3 @@ public class MainWindow extends AnchorPane {
         userInput.clear();
     }
 }
-
