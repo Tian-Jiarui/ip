@@ -39,8 +39,12 @@ public class Valencia {
     For CLI
      */
     public void run() {
-        ui.showWelcome();
-
+        ui.showLines(
+                "_________________________________________________",
+                "Hello! I'm Valencia.",
+                "What can I do for you?",
+                "_________________________________________________"
+        );
         while (true) {
             String input = ui.readCommand();
             String response = getResponse(input);
