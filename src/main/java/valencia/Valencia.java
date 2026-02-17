@@ -18,6 +18,11 @@ public class Valencia {
     private final TaskList taskList;
     private String commandType = "Other";
 
+    /**
+     * Creates a new Valencia instance using the given storage file path.
+     *
+     * @param filePath Path to the data file used for loading/saving tasks.
+     */
     public Valencia(String filePath) {
         assert filePath != null && !filePath.isBlank() : "filePath must be non-null and non-blank";
         ui = new Ui();
@@ -171,7 +176,7 @@ public class Valencia {
         Parser.validateTaskNumber(taskNum, taskList);
         return taskNum - 1;
     }
-    
+
     private void saveTasks() {
         storage.save(taskList);
     }
