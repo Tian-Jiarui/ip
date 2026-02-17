@@ -14,6 +14,7 @@ public class Task {
      * @param description Task description.
      */
     public Task(String description) {
+        assert description != null && !description.isBlank() : "Task description must be non-null and non-blank";
         this.description = description;
         this.isDone = false;
     }
@@ -24,6 +25,7 @@ public class Task {
      * @return Task description.
      */
     public String getDescription() {
+        assert description != null : "description should never be null";
         return description;
     }
 
@@ -41,6 +43,7 @@ public class Task {
      */
     public void markDone() {
         this.isDone = true;
+        assert isDone : "isDone should be true after markDone";
     }
 
     /**
@@ -48,6 +51,7 @@ public class Task {
      */
     public void unmarkDone() {
         this.isDone = false;
+        assert !isDone : "isDone should be false after unmarkDone";
     }
 
     /**
@@ -56,11 +60,8 @@ public class Task {
      * @return "[X]" if done, otherwise "[ ]".
      */
     public String checkDone() {
-        if (this.isDone) {
-            return "[X]";
-        } else {
-            return "[ ]";
-        }
+        // isDone is boolean so it is always a valid state
+        return isDone ? "[X]" : "[ ]";
     }
 
     /**
@@ -70,6 +71,7 @@ public class Task {
      */
     @Override
     public String toString() {
-        return checkDone() + " " + this.description;
+        assert description != null : "description should never be null";
+        return checkDone() + " " + description;
     }
 }

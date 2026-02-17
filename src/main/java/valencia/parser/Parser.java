@@ -23,9 +23,15 @@ public class Parser {
      * @throws ValenciaException If task number is missing or not a number.
      */
     public static int parseTaskNumber(String input, String commandWord) {
+        assert input != null : "input should not be null";
+        assert commandWord != null && !commandWord.isBlank() : "commandWord should be non-null and non-blank";
+        assert input.length() >= commandWord.length() : "input should be at least as long as commandWord";
+
         String rest = input.substring(commandWord.length()).trim();
         try {
-            return Integer.parseInt(rest);
+            int taskNum = Integer.parseInt(rest);
+            assert taskNum > 0 : "Parsed task number should be positive";
+            return taskNum;
         } catch (NumberFormatException e) {
             throw new ValenciaException("Sorry! I need a task number!");
         }
@@ -39,6 +45,9 @@ public class Parser {
      * @throws ValenciaException If task number is out of range.
      */
     public static void validateTaskNumber(int taskNum, TaskList taskList) {
+        assert taskList != null : "taskList should not be null";
+        assert taskNum > 0 : "taskNum should be positive";
+
         if (taskNum < 1 || taskNum > taskList.size()) {
             throw new ValenciaException("That task number does not exist :P");
         }
@@ -52,10 +61,14 @@ public class Parser {
      * @throws ValenciaException If description is empty.
      */
     public static String parseTodoDescription(String input) {
+        assert input != null : "input should not be null";
+        assert input.length() >= 4 : "input should contain at least the command word 'todo'";
+
         String desc = input.substring(4).trim();
         if (desc.isEmpty()) {
             throw new ValenciaException("I did not receive a task :(");
         }
+        assert !desc.isBlank() : "Todo description should not be blank after validation";
         return desc;
     }
 
@@ -67,6 +80,9 @@ public class Parser {
      * @throws ValenciaException If format is wrong or date is invalid.
      */
     public static Deadline parseDeadline(String input) {
+        assert input != null : "input should not be null";
+        assert input.length() >= 8 : "input should contain at least the command word 'deadline'";
+
         String desc = input.substring(8).trim(); // remove "deadline"
         String[] parts = desc.split(" /by ", 2);
         if (parts.length < 2) {
@@ -76,6 +92,9 @@ public class Parser {
         String taskDesc = parts[0].trim();
         String dateStr = parts[1].trim();
 
+        assert !taskDesc.isBlank() : "Deadline description should not be blank when '/by' is present";
+        assert !dateStr.isBlank() : "Deadline date string should not be blank when '/by' is present";
+
         LocalDate by;
         try {
             by = LocalDate.parse(dateStr);
@@ -83,7 +102,9 @@ public class Parser {
             throw new ValenciaException("Wrong format! Date must be yyyy-MM-dd!");
         }
 
-        return new Deadline(taskDesc, by);
+        Deadline deadline = new Deadline(taskDesc, by);
+        assert deadline != null : "Deadline object should not be null";
+        return deadline;
     }
 
     /**
@@ -94,20 +115,31 @@ public class Parser {
      * @throws ValenciaException If format is wrong.
      */
     public static Event parseEvent(String input) {
-        String desc = input.substring(5).trim();
+        assert input != null : "input should not be null";
+        assert input.length() >= 5 : "input should contain at least the command word 'event'";
+
+        String desc = input.substring(5).trim(); // remove "event"
         String[] firstPart = desc.split(" /from ", 2);
         if (firstPart.length < 2) {
             throw new ValenciaException("Wrong event format!");
         }
+
         String input1 = firstPart[0].trim();
         String[] secondPart = firstPart[1].split(" /to ", 2);
         if (secondPart.length < 2) {
             throw new ValenciaException("Wrong event format!");
         }
+
         String input2 = secondPart[0].trim();
         String input3 = secondPart[1].trim();
 
-        return new Event(input1, input2, input3);
+        assert !input1.isBlank() : "Event description should not be blank when '/from' is present";
+        assert !input2.isBlank() : "Event start should not be blank when '/to' is present";
+        assert !input3.isBlank() : "Event end should not be blank when '/to' is present";
+
+        Event event = new Event(input1, input2, input3);
+        assert event != null : "Event object should not be null";
+        return event;
     }
 
     /**
@@ -117,12 +149,15 @@ public class Parser {
      * @return Keyword to search.
      */
     public static String parseFindKeyword(String input) {
+        assert input != null : "input should not be null";
+        assert input.length() >= 4 : "input should contain at least the command word 'find'";
+
         String keyword = input.substring(4).trim(); // remove "find"
         if (keyword.isEmpty()) {
             throw new ValenciaException("Find what?");
         }
+        assert !keyword.isBlank() : "Find keyword should not be blank after validation";
         return keyword;
     }
-
 }
 
