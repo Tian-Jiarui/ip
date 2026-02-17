@@ -16,7 +16,9 @@ public class TaskList {
      * @param task Task to add.
      */
     public void add(Task task) {
+        assert task != null : "task to add should not be null";
         tasks.add(task);
+        assert tasks.contains(task) : "task should be present after add";
     }
 
     /**
@@ -26,7 +28,10 @@ public class TaskList {
      * @return The task at the index.
      */
     public Task get(int index) {
-        return tasks.get(index);
+        assert index >= 0 && index < tasks.size() : "index out of bounds: " + index;
+        Task task = tasks.get(index);
+        assert task != null : "stored task should not be null";
+        return task;
     }
 
     /**
@@ -35,15 +40,16 @@ public class TaskList {
      * @return Task count.
      */
     public int size() {
+        assert tasks.size() >= 0 : "tasks size should never be negative";
         return tasks.size();
     }
-
 
     /**
      * Prints all tasks with numbering to stdout.
      */
     public void printList() {
         for (int i = 0; i < tasks.size(); i++) {
+            assert tasks.get(i) != null : "stored task should not be null";
             System.out.println(String.format("%s. %s", i + 1, tasks.get(i)));
         }
     }
@@ -54,6 +60,8 @@ public class TaskList {
      * @param index Index in the list (0-based).
      */
     public void markDone(int index) {
+        assert index >= 0 && index < tasks.size() : "index out of bounds: " + index;
+        assert tasks.get(index) != null : "stored task should not be null";
         tasks.get(index).markDone();
     }
 
@@ -63,6 +71,8 @@ public class TaskList {
      * @param index Index in the list (0-based).
      */
     public void unmarkDone(int index) {
+        assert index >= 0 && index < tasks.size() : "index out of bounds: " + index;
+        assert tasks.get(index) != null : "stored task should not be null";
         tasks.get(index).unmarkDone();
     }
 
@@ -73,7 +83,10 @@ public class TaskList {
      * @return The removed task.
      */
     public Task remove(int index) {
-        return tasks.remove(index);
+        assert index >= 0 && index < tasks.size() : "index out of bounds: " + index;
+        Task removed = tasks.remove(index);
+        assert removed != null : "remove should return a non-null task";
+        return removed;
     }
 
     /**
@@ -82,40 +95,58 @@ public class TaskList {
      * @return Unmodifiable list of tasks.
      */
     public List<Task> getTasks() {
-        return Collections.unmodifiableList(tasks);
+        List<Task> view = Collections.unmodifiableList(tasks);
+        assert view != null : "unmodifiable view should not be null";
+        return view;
     }
 
     /**
      * Finds task by keyword and return the tasks that matches.
+     *
      * @param keyword User keyword (e.g. book)
      * @return List of tasks that match
      */
     public List<Task> findByKeyword(String keyword) {
+        assert keyword != null : "keyword should not be null";
+
         List<Task> matches = new ArrayList<>();
         String key = keyword.toLowerCase();
 
         for (Task t : tasks) {
+            assert t != null : "stored task should not be null";
+            assert t.getDescription() != null : "task description should not be null";
             if (t.getDescription().toLowerCase().contains(key)) {
                 matches.add(t);
             }
         }
+        assert matches != null : "matches list should not be null";
         return matches;
     }
-
-    /** 
-     * Prints tasks that match the given keyword. 
-     * 
-     * @param keyword Keyword to match against task descriptions.
+    
+    /**
+     * Print out tasks that matches
+     *
+     * @param keyword User keyword (e.g. book)
      */
     public void printMatches(String keyword) {
+        assert keyword != null : "keyword should not be null";
+
         int count = 0;
+        String key = keyword.toLowerCase();
+
         for (int i = 0; i < tasks.size(); i++) {
-            if (tasks.get(i).getDescription().toLowerCase().contains(keyword.toLowerCase())) {
+            Task t = tasks.get(i);
+            assert t != null : "stored task should not be null";
+            assert t.getDescription() != null : "task description should not be null";
+
+            if (t.getDescription().toLowerCase().contains(key)) {
                 count++;
                 System.out.println(String.format("%d. %s", count, tasks.get(i)));
             }
         }
+        assert count >= 0 : "match count should never be negative";
     }
+
     // =========================
     // GUI
     // =========================
@@ -127,18 +158,26 @@ public class TaskList {
         }
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < tasks.size(); i++) {
+            assert tasks.get(i) != null : "stored task should not be null";
             sb.append(i + 1).append(". ").append(tasks.get(i)).append("\n");
         }
-        return sb.toString().trim();
+        String result = sb.toString().trim();
+        assert !result.isBlank() : "formatted list should not be blank when tasks is non-empty";
+        return result;
     }
 
     /** Returns matching tasks as a string (for GUI). */
     public String formatMatches(String keyword) {
+        assert keyword != null : "keyword should not be null";
+
         String key = keyword.toLowerCase();
         int count = 0;
         StringBuilder sb = new StringBuilder();
 
         for (Task t : tasks) {
+            assert t != null : "stored task should not be null";
+            assert t.getDescription() != null : "task description should not be null";
+
             if (t.getDescription().toLowerCase().contains(key)) {
                 count++;
                 sb.append(count).append(". ").append(t).append("\n");
@@ -148,6 +187,8 @@ public class TaskList {
         if (count == 0) {
             return "(no matching tasks)";
         }
-        return sb.toString().trim();
+        String result = sb.toString().trim();
+        assert !result.isBlank() : "formatted matches should not be blank when there are matches";
+        return result;
     }
 }

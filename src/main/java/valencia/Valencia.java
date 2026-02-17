@@ -19,9 +19,14 @@ public class Valencia {
     private String commandType = "Other";
 
     public Valencia(String filePath) {
+        assert filePath != null && !filePath.isBlank() : "filePath must be non-null and non-blank";
         ui = new Ui();
         storage = new Storage(filePath);
         taskList = storage.load();
+
+        assert ui != null : "ui should be initialized";
+        assert storage != null : "storage should be initialized";
+        assert taskList != null : "taskList should not be null after loading";
     }
 
     public static void main(String[] args) {
@@ -45,6 +50,7 @@ public class Valencia {
 
         while (true) {
             String input = ui.readCommand();
+            assert input != null : "Ui.readCommand() should not return null";
             String response = getResponse(input);
             ui.showMessage(response);
 
@@ -58,11 +64,9 @@ public class Valencia {
      * Processes a user command and returns Valencia's reply.
      */
     public String getResponse(String input) {
-        if (input == null) {
-            commandType = "Error";
-            return "OOPS!!! Please type a command!";
-        }
-
+        assert input != null : "input passed into getResponse should not be null";
+        assert taskList != null : "taskList should be initialized";
+        assert storage != null : "storage should be initialized";
         String trimmed = input.trim();
 
         try {
