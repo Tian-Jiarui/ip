@@ -1,5 +1,11 @@
 package valencia.task;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Optional;
+
 /**
  * Represents an event task with a start time and end time.
  */
@@ -46,5 +52,21 @@ public class Event extends Task {
     @Override
     public String toString() {
         return String.format("[E] %s (from: %s to: %s)", super.toString(), this.from, this.to);
+    }
+
+    @Override
+    public Optional<LocalDateTime> getReminderDateTime() {
+        try {
+            return Optional.of(LocalDateTime.parse(from,
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm")));
+        } catch (DateTimeParseException ignored) {
+            // try date-only
+        }
+
+        try {
+            return Optional.of(LocalDate.parse(from).atStartOfDay());
+        } catch (DateTimeParseException e) {
+            return Optional.empty();
+        }
     }
 }

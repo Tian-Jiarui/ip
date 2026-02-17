@@ -1,7 +1,9 @@
 package valencia.task;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -183,5 +185,37 @@ public class TaskList {
         String result = sb.toString().trim();
         assert !result.isBlank() : "formatted matches should not be blank when there are matches";
         return result;
+    }
+
+    /**
+     * Returns upcoming tasks (deadlines/events) within the next {@code days} days.
+     *
+     * @param days Number of days from now (must be positive).
+     * @return Formatted upcoming tasks, or "(no upcoming tasks)" if none.
+     */
+    public String formatUpcoming(int days) {
+        assert days > 0 : "days should be positive";
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime end = now.plusDays(days);
+
+        List<Task> upcoming = tasks.stream()
+                .filter(t -> t.getReminderDateTime().isPresent())
+                .filter(t -> {
+                    LocalDateTime dt = t.getReminderDateTime().get();
+                    return !dt.isBefore(now) && !dt.isAfter(end);
+                })
+                .sorted(Comparator.comparing(t -> t.getReminderDateTime().get()))
+                .collect(Collectors.toList());
+
+        if (upcoming.isEmpty()) {
+            return "(no upcoming tasks)";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < upcoming.size(); i++) {
+            sb.append(i + 1).append(". ").append(upcoming.get(i)).append("\n");
+        }
+        return sb.toString().trim();
     }
 }
