@@ -102,18 +102,17 @@ public class TaskList {
         return matches;
     }
 
-    /**
-     * Print out tasks that matches
-     *
-     * @param keyword User keyword (e.g. book)
-     *
+    /** 
+     * Prints tasks that match the given keyword. 
+     * 
+     * @param keyword Keyword to match against task descriptions.
      */
     public void printMatches(String keyword) {
         int count = 0;
         for (int i = 0; i < tasks.size(); i++) {
             if (tasks.get(i).getDescription().toLowerCase().contains(keyword.toLowerCase())) {
                 count++;
-                System.out.println(String.format("%d.%s", count, tasks.get(i)));
+                System.out.println(String.format("%d. %s", count, tasks.get(i)));
             }
         }
     }
