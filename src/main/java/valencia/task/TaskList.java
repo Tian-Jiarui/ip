@@ -3,6 +3,7 @@ package valencia.task;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Stores and manages a list of tasks.
@@ -91,17 +92,13 @@ public class TaskList {
      * @return List of tasks that match
      */
     public List<Task> findByKeyword(String keyword) {
-        List<Task> matches = new ArrayList<>();
         String key = keyword.toLowerCase();
 
-        for (Task t : tasks) {
-            if (t.getDescription().toLowerCase().contains(key)) {
-                matches.add(t);
-            }
-        }
-        return matches;
+        return tasks.stream()
+                .filter(t -> t.getDescription().toLowerCase().contains(key))
+                .collect(Collectors.toList());
     }
-
+    
     /**
      * Print out tasks that matches
      *
