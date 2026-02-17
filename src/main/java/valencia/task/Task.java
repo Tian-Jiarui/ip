@@ -1,5 +1,8 @@
 package valencia.task;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 /**
  * Represents a generic task with a description and a completion status.
  * Other task types (Todo/Deadline/Event) extend this.
@@ -73,5 +76,15 @@ public class Task {
     public String toString() {
         assert description != null : "description should never be null";
         return checkDone() + " " + description;
+    }
+
+    /**
+     * Returns the datetime used for reminder filtering.
+     * Default: empty (task has no reminder time).
+     *
+     * @return Optional reminder datetime.
+     */
+    public Optional<LocalDateTime> getReminderDateTime() {
+        return Optional.empty();
     }
 }

@@ -1,7 +1,10 @@
 package valencia.task;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 /**
  * Represents a deadline task with a due date.
@@ -40,4 +43,10 @@ public class Deadline extends Task {
     public String toString() {
         return String.format("[D] %s (by: %s)", super.toString(), by.format(output));
     }
+
+    @Override
+    public Optional<LocalDateTime> getReminderDateTime() {
+        return Optional.of(by.atTime(LocalTime.MAX));
+    }
+
 }

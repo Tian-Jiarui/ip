@@ -159,5 +159,36 @@ public class Parser {
         assert !keyword.isBlank() : "Find keyword should not be blank after validation";
         return keyword;
     }
+
+    /**
+     * Parses number of days for remind command.
+     * Usage: "remind" (defaults to 7) or "remind 3".
+     *
+     * @param input Full user input.
+     * @return Number of days to look ahead.
+     * @throws ValenciaException If days is invalid.
+     */
+    public static int parseRemindDays(String input) throws ValenciaException {
+        String trimmed = input.trim();
+        String[] parts = trimmed.split("\\s+");
+
+        if (parts.length == 1) {
+            return 7;
+        }
+
+        if (parts.length == 2) {
+            try {
+                int days = Integer.parseInt(parts[1]);
+                if (days <= 0) {
+                    throw new ValenciaException("Days must be a positive integer.");
+                }
+                return days;
+            } catch (NumberFormatException e) {
+                throw new ValenciaException("Days must be a positive integer.");
+            }
+        }
+
+        throw new ValenciaException("Usage: remind [days]");
+    }
 }
 

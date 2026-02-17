@@ -109,6 +109,9 @@ public class Valencia {
             case "bye":
                 commandType = "Bye";
                 return "Bye. Hope to see you again soon!";
+            case "remind":
+                commandType = "Remind";
+                return handleRemind(trimmed);
             default:
                 commandType = "Unknown";
                 throw new ValenciaException("I do not understand what you are saying :'(");
@@ -179,5 +182,10 @@ public class Valencia {
 
     private void saveTasks() {
         storage.save(taskList);
+    }
+
+    private String handleRemind(String input) throws ValenciaException {
+        int days = Parser.parseRemindDays(input);
+        return "Upcoming tasks (next " + days + " days):\n" + taskList.formatUpcoming(days);
     }
 }
