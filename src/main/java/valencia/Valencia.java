@@ -18,11 +18,6 @@ public class Valencia {
     private final TaskList taskList;
     private String commandType = "Other";
 
-    /**
-     * Creates a Valencia instance that loads tasks from the given file path.
-     *
-     * @param filePath Path to the save file.
-     */
     public Valencia(String filePath) {
         assert filePath != null && !filePath.isBlank() : "filePath must be non-null and non-blank";
         ui = new Ui();
@@ -34,9 +29,6 @@ public class Valencia {
         assert taskList != null : "taskList should not be null after loading";
     }
 
-    /**
-     * Launches the Valencia application.
-     */
     public static void main(String[] args) {
         new Valencia("data/valencia.txt").run();
     }
@@ -46,7 +38,7 @@ public class Valencia {
     }
 
     /**
-     * For CLI
+     * Runs the CLI command loop until the user exits.
      */
     public void run() {
         ui.showLines(
@@ -55,6 +47,7 @@ public class Valencia {
                 "What can I do for you?",
                 "_________________________________________________"
         );
+
         while (true) {
             String input = ui.readCommand();
             assert input != null : "Ui.readCommand() should not return null";
@@ -68,103 +61,49 @@ public class Valencia {
     }
 
     /**
-     * GUI + CLI
-     * Take user input and returns Valencia reply as a string
+     * Processes a user command and returns Valencia's reply.
      */
     public String getResponse(String input) {
         assert input != null : "input passed into getResponse should not be null";
         assert taskList != null : "taskList should be initialized";
         assert storage != null : "storage should be initialized";
         String trimmed = input.trim();
+
         try {
             if (trimmed.isEmpty()) {
                 throw new ValenciaException("Please type a command!");
             }
-            String lower = trimmed.toLowerCase();
 
-            if (lower.startsWith("mark")) {
+            String commandWord = trimmed.split("\\s+", 2)[0].toLowerCase();
+
+            switch (commandWord) {
+            case "mark":
                 commandType = "Mark";
-                int taskNum = Parser.parseTaskNumber(trimmed, "mark");
-                Parser.validateTaskNumber(taskNum, taskList);
-                int index = taskNum - 1;
-                assert index >= 0 && index < taskList.size() : "Validated taskNum should map to a valid index";
-                taskList.markDone(index);
-                storage.save(taskList);
-                return String.format("Nice! I've marked this task as done:\n%s", taskList.get(index));
-            }
-
-            if (lower.startsWith("unmark")) {
+                return handleMarkUnmark(trimmed, true);
+            case "unmark":
                 commandType = "Mark";
-                int taskNum = Parser.parseTaskNumber(trimmed, "unmark");
-                Parser.validateTaskNumber(taskNum, taskList);
-                int index = taskNum - 1;
-                assert index >= 0 && index < taskList.size() : "Validated taskNum should map to a valid index";
-                taskList.unmarkDone(index);
-                storage.save(taskList);
-                return String.format("OK, I've marked this task as not done yet:\n%s", taskList.get(taskNum - 1));
-            }
-
-            if (lower.startsWith("todo")) {
+                return handleMarkUnmark(trimmed, false);
+            case "todo":
                 commandType = "Add";
-                String desc = Parser.parseTodoDescription(trimmed);
-                assert desc != null : "Todo description should not be null";
-                Task todoTask = new Todo(desc);
-                assert todoTask != null : "todoTask should not be null";
-                taskList.add(todoTask);
-                storage.save(taskList);
-                return String.format("Got it. I've added this task:\n%s\nNow you have %d tasks in the list.",
-                        todoTask, taskList.size());
-            }
-
-            if (lower.startsWith("deadline")) {
+                return handleTodo(trimmed);
+            case "deadline":
                 commandType = "Add";
-                Task deadlineTask = Parser.parseDeadline(trimmed);
-                assert deadlineTask != null : "parseDeadline should not return null";
-                taskList.add(deadlineTask);
-                storage.save(taskList);
-                return String.format("Got it. I've added this task:\n%s\nNow you have %d tasks in the list.",
-                        deadlineTask, taskList.size());
-            }
-
-            if (lower.startsWith("event")) {
+                return handleDeadline(trimmed);
+            case "event":
                 commandType = "Add";
-                Task eventTask = Parser.parseEvent(trimmed);
-                assert eventTask != null : "parseEvent should not return null";
-                taskList.add(eventTask);
-                storage.save(taskList);
-                return String.format("Got it. I've added this task:\n%s\nNow you have %d tasks in the list.",
-                        eventTask, taskList.size());
-            }
-
-            if (lower.startsWith("delete")) {
+                return handleEvent(trimmed);
+            case "delete":
                 commandType = "Delete";
-                int taskNum = Parser.parseTaskNumber(trimmed, "delete");
-                Parser.validateTaskNumber(taskNum, taskList);
-                int index = taskNum - 1;
-                assert index >= 0 && index < taskList.size() : "Validated taskNum should map to a valid index";
-                Task removedTask = taskList.remove(index);
-                assert removedTask != null : "remove should return a Task";
-                storage.save(taskList);
-                return String.format("Noted. I've removed this task:\n%s\nNow you have %d tasks in the list.",
-                        removedTask, taskList.size());
-            }
-
-            if (lower.startsWith("find")) {
+                return handleDelete(trimmed);
+            case "find":
                 commandType = "Find";
-                String keyword = Parser.parseFindKeyword(trimmed);
-                assert keyword != null : "find keyword should not be null";
-                return "Here are the matching tasks in your list:\n" + taskList.formatMatches(keyword);
-            }
-
-            switch (lower) {
+                return handleFind(trimmed);
             case "list":
                 commandType = "List";
                 return "Here are the tasks in your list:\n" + taskList.formatList();
-
             case "bye":
                 commandType = "Bye";
                 return "Bye. Hope to see you again soon!";
-
             default:
                 commandType = "Unknown";
                 throw new ValenciaException("I do not understand what you are saying :'(");
@@ -175,5 +114,65 @@ public class Valencia {
             return "OOPS!!! " + e.getMessage();
         }
     }
-}
 
+    private String handleMarkUnmark(String input, boolean isMark) throws ValenciaException {
+        String commandWord = isMark ? "mark" : "unmark";
+        int index = getValidatedIndex(input, commandWord);
+
+        if (isMark) {
+            taskList.markDone(index);
+            saveTasks();
+            return String.format("Nice! I've marked this task as done:\n%s", taskList.get(index));
+        }
+
+        taskList.unmarkDone(index);
+        saveTasks();
+        return String.format("OK, I've marked this task as not done yet:\n%s", taskList.get(index));
+    }
+
+    private String handleTodo(String input) throws ValenciaException {
+        String desc = Parser.parseTodoDescription(input);
+        Task todoTask = new Todo(desc);
+        return addTask(todoTask);
+    }
+
+    private String handleDeadline(String input) throws ValenciaException {
+        Task deadlineTask = Parser.parseDeadline(input);
+        return addTask(deadlineTask);
+    }
+
+    private String handleEvent(String input) throws ValenciaException {
+        Task eventTask = Parser.parseEvent(input);
+        return addTask(eventTask);
+    }
+
+    private String addTask(Task task) {
+        taskList.add(task);
+        saveTasks();
+        return String.format("Got it. I've added this task:\n%s\nNow you have %d tasks in the list.",
+                task, taskList.size());
+    }
+
+    private String handleDelete(String input) throws ValenciaException {
+        int index = getValidatedIndex(input, "delete");
+        Task removedTask = taskList.remove(index);
+        saveTasks();
+        return String.format("Noted. I've removed this task:\n%s\nNow you have %d tasks in the list.",
+                removedTask, taskList.size());
+    }
+
+    private String handleFind(String input) throws ValenciaException {
+        String keyword = Parser.parseFindKeyword(input);
+        return "Here are the matching tasks in your list:\n" + taskList.formatMatches(keyword);
+    }
+
+    private int getValidatedIndex(String input, String commandWord) throws ValenciaException {
+        int taskNum = Parser.parseTaskNumber(input, commandWord);
+        Parser.validateTaskNumber(taskNum, taskList);
+        return taskNum - 1;
+    }
+    
+    private void saveTasks() {
+        storage.save(taskList);
+    }
+}

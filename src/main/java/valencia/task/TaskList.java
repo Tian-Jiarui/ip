@@ -122,7 +122,7 @@ public class TaskList {
         assert matches != null : "matches list should not be null";
         return matches;
     }
-
+    
     /**
      * Print out tasks that matches
      *
@@ -141,7 +141,7 @@ public class TaskList {
 
             if (t.getDescription().toLowerCase().contains(key)) {
                 count++;
-                System.out.println(String.format("%d.%s", count, t));
+                System.out.println(String.format("%d. %s", count, tasks.get(i)));
             }
         }
         assert count >= 0 : "match count should never be negative";
