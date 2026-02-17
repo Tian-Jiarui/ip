@@ -115,7 +115,7 @@ public class TaskList {
                 .filter(t -> t.getDescription().toLowerCase().contains(key))
                 .collect(Collectors.toList());
     }
-    
+
     /**
      * Print out tasks that matches
      *
