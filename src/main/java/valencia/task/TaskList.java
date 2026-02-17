@@ -3,6 +3,7 @@ package valencia.task;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Stores and manages a list of tasks.
@@ -108,19 +109,11 @@ public class TaskList {
      */
     public List<Task> findByKeyword(String keyword) {
         assert keyword != null : "keyword should not be null";
-
-        List<Task> matches = new ArrayList<>();
         String key = keyword.toLowerCase();
 
-        for (Task t : tasks) {
-            assert t != null : "stored task should not be null";
-            assert t.getDescription() != null : "task description should not be null";
-            if (t.getDescription().toLowerCase().contains(key)) {
-                matches.add(t);
-            }
-        }
-        assert matches != null : "matches list should not be null";
-        return matches;
+        return tasks.stream()
+                .filter(t -> t.getDescription().toLowerCase().contains(key))
+                .collect(Collectors.toList());
     }
     
     /**
