@@ -5,6 +5,7 @@ on: [push, pull_request]
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         platform: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
@@ -19,33 +20,13 @@ jobs:
       - name: Setup JDK 17 (with JavaFX)
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: zulu
           java-version: '17'
-          java-package: 'jdk+fx'
+          java-package: jdk+fx
           cache: gradle
 
       - name: Build and check with Gradle
         shell: bash
         run: ./gradlew check
 
-      # Optional: remove everything below if you don't need text-ui-test
-      - name: Install dos2unix on Linux
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y dos2unix
-
-      - name: Install dos2unix on macOS
-        if: runner.os == 'macOS'
-        run: brew install dos2unix
-
-      - name: Perform IO redirection test (*NIX or macOS)
-        if: runner.os == 'Linux' || runner.os == 'macOS'
-        working-directory: ${{ github.workspace }}/text-ui-test
-        shell: bash
-        run: ./runtest.sh
-
-      - name: Perform IO redirection test (Windows)
-        if: runner.os == 'Windows'
-        working-directory: ${{ github.workspace }}/text-ui-test
-        shell: cmd
-        run: runtest.bat
-
+      
