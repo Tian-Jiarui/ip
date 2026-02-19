@@ -17,6 +17,7 @@ public class Valencia {
     private final Storage storage;
     private final TaskList taskList;
     private String commandType = "Other";
+    private boolean awaitingPickupLine = false;
 
     /**
      * Creates a new Valencia instance using the given storage file path.
@@ -75,12 +76,22 @@ public class Valencia {
         String trimmed = input.trim();
 
         try {
+            if (awaitingPickupLine) {
+                commandType = "Personality";
+                return handlePickupLineResponse(trimmed);
+            }
+
+            String lower = trimmed.toLowerCase();
+            if (lower.contains("pickup line")) {
+                commandType = "Personality";
+                return handlePickupLineRequest();
+            }
             if (trimmed.isEmpty()) {
                 throw new ValenciaException("Please type a command!");
             }
 
-            String commandWord = trimmed.split("\\s+", 2)[0].toLowerCase();
-            
+            String commandWord = lower.split("\\s+", 2)[0];
+
             switch (commandWord) {
             case "mark":
                 commandType = "Mark";
@@ -112,6 +123,17 @@ public class Valencia {
             case "remind":
                 commandType = "Remind";
                 return handleRemind(trimmed);
+            case "hi":
+            case "hello":
+            case "hey":
+                commandType = "Greeting";
+                return handleGreeting(commandWord);
+
+            case "pickup":
+            case "pickupline":
+            case "pickup-line":
+                commandType = "Personality";
+                return handlePickupLineRequest();
             default:
                 commandType = "Unknown";
                 throw new ValenciaException("I do not understand what you are saying :'(");
@@ -188,4 +210,32 @@ public class Valencia {
         int days = Parser.parseRemindDays(input);
         return "Upcoming tasks (next " + days + " days):\n" + taskList.formatUpcoming(days);
     }
+
+    private String handleGreeting(String greetingWord) {
+        switch (greetingWord) {
+        case "hi":
+            return "Hi hi~ you’re looking good today 😌";
+        case "hey":
+            return "Hey handsome 😳 what’s on your mind?";
+        case "hello":
+        default:
+            return "Hello! Valencia here <3";
+        }
+    }
+
+    private String handlePickupLineRequest() {
+        awaitingPickupLine = true;
+        return "Ooo a pickup line? Hit me with it! What is it? 😉";
+    }
+
+    private String handlePickupLineResponse(String userLine) throws ValenciaException {
+        awaitingPickupLine = false;
+
+        if (userLine.isBlank()) {
+            throw new ValenciaException("Don’t leave me hanging 😭 give me the pickup line!");
+        }
+
+        return "WOW. I feel so flattered 😳 Let’s go out sometime!";
+    }
+
 }
