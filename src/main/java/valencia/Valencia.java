@@ -82,7 +82,7 @@ public class Valencia {
             }
 
             String lower = trimmed.toLowerCase();
-            if (lower.contains("pickup line") || lower.contains("pick up line")){
+            if (lower.contains("pickup line") || lower.contains("pick up line")) {
                 commandType = "Personality";
                 return handlePickupLineRequest();
             }
