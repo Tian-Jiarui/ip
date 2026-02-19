@@ -59,13 +59,21 @@
 ---
 
 ## Week 6 (A-AiAssisted + optional enhancements + finalisation + product website)
+
 **AI usage**
-- Continued using ChatGPT to improve productivity (debugging, explanations, refactoring suggestions, and drafting docs/Markdown).
+- Continued using ChatGPT to improve productivity across development and finalisation tasks.
+- Used ChatGPT to:
+  - Debug CI/Checkstyle issues (e.g., interpreting error logs and fixing formatting violations).
+  - Implement and refine the **A-Personality** feature (greetings + pickup line interaction) and improve code structure/readability.
+  - Clarify JavaFX implementation details (e.g., setting `Stage` title so “Valencia” shows in the window title bar).
+  - Improve UI presentation for the product screenshot (e.g., reducing avatar size in chat bubbles to fit more content).
+  - Draft and polish documentation (User Guide in `docs/README.md`, PR/Markdown formatting, and this `AI.md` content).
 - This `AI.md` serves as my record of AI-assisted work, as required.
 
 **Observations**
-- Helpful for rewriting long English paragraphs so I don’t need to keep checking grammar.
-- Helped with formatting (Markdown/wording) to make documentation and notes look cleaner and more consistent.
+- Helpful for rewriting English paragraphs so I don’t need to keep re-checking grammar.
+- Helped with Markdown formatting to make docs cleaner and more consistent.
+- Useful for quickly pinpointing fixes from error messages (especially CI failures), but still required manual verification and adjustments to match my codebase.
 
 ---
 
