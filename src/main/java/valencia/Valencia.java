@@ -80,7 +80,7 @@ public class Valencia {
             }
 
             String commandWord = trimmed.split("\\s+", 2)[0].toLowerCase();
-
+            
             switch (commandWord) {
             case "mark":
                 commandType = "Mark";
