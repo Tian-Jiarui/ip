@@ -26,6 +26,7 @@ public class Main extends Application {
             stage.setMinHeight(220);
             stage.setMinWidth(417);
             stage.setMaxWidth(417);
+            stage.setTitle("Valencia");
             fxmlLoader.<MainWindow>getController().setValencia(valencia); // inject the Duke instance
             stage.show();
         } catch (IOException e) {
