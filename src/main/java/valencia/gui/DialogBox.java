@@ -32,7 +32,9 @@ public class DialogBox extends HBox {
             fxmlLoader.setRoot(this);
             fxmlLoader.load();
 
-            // IMPORTANT: Style only this chat label, not every label in the app
+            displayPicture.setFitWidth(50);
+            displayPicture.setFitHeight(50);
+            displayPicture.setPreserveRatio(true);
             dialog.getStyleClass().add("dialog-label");
         } catch (IOException e) {
             e.printStackTrace();
