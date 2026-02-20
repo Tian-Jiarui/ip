@@ -7,6 +7,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.animation.PauseTransition;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+import javafx.application.Platform;
 import valencia.Valencia;
 
 /**
@@ -67,5 +71,18 @@ public class MainWindow extends AnchorPane {
                 DialogBox.getValenciaDialog(response, valenciaImage, commandType)
         );
         userInput.clear();
+
+        if (input.equalsIgnoreCase("bye")) {
+            userInput.setDisable(true);
+            sendButton.setDisable(true);
+
+            PauseTransition delay = new PauseTransition(Duration.seconds(0.6));
+            delay.setOnFinished(e -> {
+                Stage stage = (Stage) dialogContainer.getScene().getWindow();
+                stage.close();
+                Platform.exit();
+            });
+            delay.play();
+        }
     }
 }
